@@ -45,7 +45,8 @@ def preprocess(sentence):
 # ----------------------------
 # Split into sentences and preprocess
 # ----------------------------
-sentences = re.split(r'(?<=[.!?])\s+', data)preprocessed_sentences = [preprocess(sentence) for sentence in sentences]
+sentences = re.split(r'(?<=[.!?])\s+', data)
+preprocessed_sentences = [preprocess(sentence) for sentence in sentences]
 
 # ----------------------------
 # TF-IDF vectorizer
