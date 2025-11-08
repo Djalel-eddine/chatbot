@@ -12,9 +12,9 @@ from bs4 import BeautifulSoup
 # ----------------------------
 # Download NLTK resources (always needed in Streamlit Cloud)
 # ----------------------------
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
+nltk.download('punkt', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('wordnet', quiet=True)
 
 # ----------------------------
 # Load and clean the text file
