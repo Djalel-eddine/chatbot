@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import string
 from bs4 import BeautifulSoup
+import re
 
 # ----------------------------
 # Download NLTK resources (always needed in Streamlit Cloud)
@@ -44,8 +45,7 @@ def preprocess(sentence):
 # ----------------------------
 # Split into sentences and preprocess
 # ----------------------------
-sentences = sent_tokenize(data)
-preprocessed_sentences = [preprocess(sentence) for sentence in sentences]
+sentences = re.split(r'(?<=[.!?])\s+', data)preprocessed_sentences = [preprocess(sentence) for sentence in sentences]
 
 # ----------------------------
 # TF-IDF vectorizer
