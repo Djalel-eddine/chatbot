@@ -1,3 +1,19 @@
+import nltk
+import os
+
+# Define a folder for NLTK data inside your project
+nltk_data_path = os.path.join(os.path.dirname(__file__), "nltk_data")
+os.makedirs(nltk_data_path, exist_ok=True)
+
+# Download the required NLTK resources into that folder
+nltk.download('punkt', download_dir=nltk_data_path)
+nltk.download('stopwords', download_dir=nltk_data_path)
+nltk.download('averaged_perceptron_tagger', download_dir=nltk_data_path)
+nltk.download('wordnet', download_dir=nltk_data_path)
+
+# Add this folder to NLTK search path
+nltk.data.path.append(nltk_data_path)
+
 import streamlit as st
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
