@@ -1,49 +1,34 @@
-# app.py
 import streamlit as st
-import nltk
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
+import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 import string
-from bs4 import BeautifulSoup
-import re
 
 # ----------------------------
-# Download NLTK resources (always needed in Streamlit Cloud)
-# ----------------------------
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
-nltk.download('wordnet', quiet=True)
-
-# ----------------------------
-# Load and clean the text file
+# Load text file
 # ----------------------------
 with open('how_to_invest_money.html', 'r', encoding='utf-8') as f:
-    html_data = f.read()
-
-# Use BeautifulSoup to extract text from HTML
-soup = BeautifulSoup(html_data, 'html.parser')
-data = soup.get_text(separator=' ')  # Convert HTML to plain text
+    data = f.read()
 
 # ----------------------------
-# Preprocess function
+# Preprocess text
 # ----------------------------
-lemmatizer = WordNetLemmatizer()
-stop_words = set(stopwords.words('english'))
-
 def preprocess(sentence):
-    words = word_tokenize(sentence)
+    lemmatizer = WordNetLemmatizer()
+    stop_words = set(stopwords.words('english'))
+    # Simple split instead of word_tokenize
+    words = sentence.split()
     words = [
-        lemmatizer.lemmatize(word.lower())
+        lemmatizer.lemmatize(word.lower().strip(string.punctuation))
         for word in words
-        if word.lower() not in stop_words and word not in string.punctuation
+        if word.lower() not in stop_words
     ]
     return " ".join(words)
 
 # ----------------------------
-# Split into sentences and preprocess
+# Split text into sentences using regex (no punkt)
 # ----------------------------
 sentences = re.split(r'(?<=[.!?])\s+', data)
 preprocessed_sentences = [preprocess(sentence) for sentence in sentences]
@@ -55,7 +40,7 @@ vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(preprocessed_sentences)
 
 # ----------------------------
-# Function to find most relevant sentence
+# Function to get most relevant sentence
 # ----------------------------
 def get_most_relevant_sentence(query):
     query_preprocessed = preprocess(query)
@@ -65,7 +50,7 @@ def get_most_relevant_sentence(query):
     return sentences[idx]
 
 # ----------------------------
-# Streamlit App
+# Streamlit app
 # ----------------------------
 def main():
     st.title("📚 Investment Chatbot")
@@ -74,11 +59,8 @@ def main():
     user_question = st.text_input("You:")
 
     if st.button("Submit"):
-        if user_question.strip():
-            answer = get_most_relevant_sentence(user_question)
-            st.write("💬 Chatbot:", answer)
-        else:
-            st.write("Please ask a question!")
+        answer = get_most_relevant_sentence(user_question)
+        st.write("💬 Chatbot:", answer)
 
 if __name__ == "__main__":
     main()
